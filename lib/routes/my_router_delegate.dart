@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:latihan_navigator/anim/quote_detail_page.dart';
 import 'package:latihan_navigator/model/quote.dart';
 import 'package:latihan_navigator/screen/quote_detail_screen.dart';
 import 'package:latihan_navigator/screen/quote_list_screen.dart';
@@ -27,8 +28,8 @@ class MyRouterDelegate extends RouterDelegate
           ),
         ),
         if (selectedQuote != null)
-          MaterialPage(
-            key: ValueKey("QuoteDetailPage-$selectedQuote"),
+          QuoteDetailsPage(
+            key: const ValueKey("QuoteDetailPage"),
             child: QuoteDetailScreen(
               quoteId: selectedQuote ?? '',
             ),
