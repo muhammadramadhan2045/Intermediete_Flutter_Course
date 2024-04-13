@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:latihan_navigator/routes/my_router_delegate.dart';
+import 'package:latihan_navigator/routes/page_manager.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,7 +26,9 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return ChangeNotifierProvider<PageManager>(
+      create: (context) => PageManager(),
+      child: MaterialApp(
         title: 'Quotes App',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -33,6 +37,8 @@ class _MyAppState extends State<MyApp> {
         home: Router(
           routerDelegate: myRouterDelegate,
           backButtonDispatcher: RootBackButtonDispatcher(),
-        ));
+        ),
+      ),
+    );
   }
 }
