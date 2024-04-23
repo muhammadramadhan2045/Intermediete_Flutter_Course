@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:latihan_image_picker/provider/home_provider.dart';
 import 'package:provider/provider.dart';
@@ -68,13 +71,46 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _onUpload() async {}
 
-  _onGalleryView() async {}
+  _onGalleryView() async {
+    final ImagePicker picker = ImagePicker();
+    final provider = context.read<HomeProvider>();
 
-  _onCameraView() async {}
+    final XFile? pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+    );
+
+    if (pickedFile != null) {
+      provider.setImageFile(pickedFile);
+      provider.setImagePath(pickedFile.path);
+    }
+  }
+
+  _onCameraView() async {
+    final ImagePicker picker = ImagePicker();
+    final provider = context.read<HomeProvider>();
+
+    final XFile? pickedFile = await picker.pickImage(
+      source: ImageSource.camera,
+    );
+
+    if (pickedFile != null) {
+      provider.setImageFile(pickedFile);
+      provider.setImagePath(pickedFile.path);
+    }
+  }
 
   _onCustomCameraView() async {}
 
   Widget _showImage() {
-    return Container();
+    final imagePath = context.watch<HomeProvider>().imagePath;
+    return kIsWeb
+        ? Image.network(
+            imagePath.toString(),
+            fit: BoxFit.contain,
+          )
+        : Image.file(
+            File(imagePath.toString()),
+            fit: BoxFit.contain,
+          );
   }
 }
