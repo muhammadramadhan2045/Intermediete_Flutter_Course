@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:latihan_image_picker/data/api/api_service.dart';
 import 'package:latihan_image_picker/provider/home_provider.dart';
+import 'package:latihan_image_picker/provider/upload_provider.dart';
 import 'package:latihan_image_picker/screen/home_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -13,8 +15,15 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<HomeProvider>(
-      create: (context) => HomeProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<HomeProvider>(
+          create: (context) => HomeProvider(),
+        ),
+        ChangeNotifierProvider<UploadProvider>(
+          create: (context) => UploadProvider(apisService: ApiService()),
+        ),
+      ],
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(

@@ -8,6 +8,8 @@ import 'package:provider/provider.dart';
 import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../provider/upload_provider.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -24,7 +26,9 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             onPressed: () => _onUpload(),
-            icon: const Icon(Icons.upload),
+            icon: context.watch<UploadProvider>().isUploading
+                ? const CircularProgressIndicator()
+                : const Icon(Icons.upload),
             tooltip: "Unggah",
           ),
         ],
@@ -71,7 +75,32 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  _onUpload() async {}
+  _onUpload() async {
+    debugPrint("Upload diklik");
+    final provider = context.read<HomeProvider>();
+    final uploadProvider = context.read<UploadProvider>();
+    final ScaffoldMessengerState scaffoldMessengerState =
+        ScaffoldMessenger.of(context);
+    final imagePath = provider.imagePath;
+    final imageFile = provider.imageFile;
+    if (imagePath == null && imageFile == null) return;
+
+    final fileName = imageFile!.name;
+    final bytes = await imageFile.readAsBytes();
+
+    final newBytes = await uploadProvider.compressImage(bytes);
+
+    await uploadProvider.uploadImage(newBytes, fileName, "Menyala abangkuh");
+
+    if (uploadProvider.uploadResponse != null) {
+      provider.setImageFile(null);
+      provider.setImagePath(null);
+    }
+
+    scaffoldMessengerState.showSnackBar(
+      SnackBar(content: Text(uploadProvider.message)),
+    );
+  }
 
   _onGalleryView() async {
     final ImagePicker picker = ImagePicker();
