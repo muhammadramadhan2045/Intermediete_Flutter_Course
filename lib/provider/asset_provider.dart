@@ -9,24 +9,26 @@ class ApiProvider extends ChangeNotifier {
 
   ApiProvider(this.assetService);
 
-  LoadingState quotesState = LoadingState.initial;
+  LoadingState quotesState = const LoadingState.initial();
   String quotesMessage = "";
 
   List<Quote> quotes = [];
 
   Future<void> getQuotes() async {
     try {
-      quotesState = LoadingState.loading;
+      quotesState = const LoadingState.loading();
       notifyListeners();
 
       final result = await assetService.getQuotes();
 
       quotes.addAll(result.list);
-      quotesState = LoadingState.loaded;
+      quotesState = LoadingState.loaded(
+        result.list,
+      );
 
       notifyListeners();
     } catch (e) {
-      quotesState = LoadingState.error;
+      quotesState = const LoadingState.error("Get quotes failed");
       quotesMessage = "Get quotes failed";
       notifyListeners();
     }
